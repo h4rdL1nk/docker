@@ -1,0 +1,24 @@
+
+file:
+  /etc/apache2/conf.d/service.conf:
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /var/log/apache2/access.log:
+    exists: true
+    linked-to: /dev/stdout
+    filetype: symlink
+  /var/log/apache2/error.log:
+    exists: true
+    linked-to: /dev/stderr
+    filetype: symlink
+command:
+  httpd -t:
+    exit-status: 0
+    timeout: 10000
+process:
+  httpd:
+    running: true
+

@@ -1,0 +1,5 @@
+linux-alpine
+php56-cli
+apache24
+apache24-php56
+apache24-php7
