@@ -1,4 +1,6 @@
-{{ range $server, $containers := groupBy $ "Env.VHOST" }}
-Docker: 
+{{ range $version, $containers := groupBy $ "Env.HTTPD_VERSION" }}
+{{ range $index, $value := $containers }}
+ID: {{ $value.ID }} {{ $value.Image }}
+{{ end }}
 {{ end }}
  
