@@ -7,6 +7,9 @@ RUN apk update && apk add curl \
     && curl https://github.com/jwilder/docker-gen/releases/download/${DOCKER_GEN_VERSION}/docker-gen-linux-${DOCKER_GEN_ARCH}-${DOCKER_GEN_VERSION}.tar.gz -sL | tar -xzvf - -C /usr/bin/ \
     && mkdir /templates
 
+ADD entrypoint.sh /entrypoint.sh
 ADD templates/* /templates/
 
-ENTRYPOINT ["/usr/bin/docker-gen","/templates/test.tmpl"]
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
