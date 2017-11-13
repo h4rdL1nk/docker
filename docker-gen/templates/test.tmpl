@@ -3,4 +3,8 @@
 ID: {{ $value.ID }} {{ $value.Image }}
 {{ end }}
 {{ end }}
+
+{{ range $key, $value := . }}
+Docker: {{$value.Hostname}}
+{{ end }}
  
