@@ -1,0 +1,31 @@
+
+version: '3.1'
+
+services:
+
+  db:
+    ports:
+      - 3306:3306
+    image: mysql:5.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: passbolt
+      MYSQL_USER: passboltApp
+      MYSQL_PASSWORD: P4ssb0lt 
+
+  app:
+    depends_on:
+      - db
+    ports:
+      - 80:80
+      - 443:443
+    image: passbolt/passbolt
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: passboltApp
+      DB_PASS: P4ssb0lt
+      DB_NAME: passbolt
+
+
