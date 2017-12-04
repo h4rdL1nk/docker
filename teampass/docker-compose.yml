@@ -1,0 +1,24 @@
+
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql:5.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: teampass 
+      MYSQL_USER: teampassApp 
+      MYSQL_PASSWORD: t34mPAsSAdM 
+
+  app:
+    depends_on:
+      - db
+    ports:
+      - 80:80
+      - 443:443
+    image: teampass/teampass 
+    restart: always
+
+
