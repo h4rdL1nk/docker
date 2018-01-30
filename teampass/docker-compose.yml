@@ -20,6 +20,3 @@ services:
       - "80:80"
     links:
       - teampass-db
-
-  
-
