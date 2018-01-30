@@ -1,15 +1,6 @@
-version: "3"
-services:
-  teampass-app:
-    restart: always
-    build:
-       context: .
-       dockerfile: Dockerfile.web
-    ports:
-      - "80:80"
-    links:
-      - teampass-db
 
+version: "2"
+services:
   teampass-db:
     restart: always
     image: mysql:5.6
@@ -20,4 +11,15 @@ services:
       MYSQL_DATABASE: teampass
       MYSQL_PASSWORD: t34mP4sSw0rD 
       MYSQL_USER: teampassApp 
+  teampass-app:
+    restart: always
+    build:
+       context: .
+       dockerfile: Dockerfile.web
+    ports:
+      - "80:80"
+    links:
+      - teampass-db
+
+  
 
