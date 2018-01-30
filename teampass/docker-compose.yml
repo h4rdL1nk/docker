@@ -19,4 +19,6 @@ services:
     ports:
       - "80:80"
     links:
+      - teampass-db:db
+    depends_on:
       - teampass-db
