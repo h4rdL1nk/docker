@@ -11,14 +11,21 @@ services:
       MYSQL_DATABASE: teampass
       MYSQL_PASSWORD: t34mP4sSw0rD 
       MYSQL_USER: teampassApp 
+    networks:
+      - passmgr
   teampass-app:
     restart: always
     build:
        context: .
        dockerfile: Dockerfile.web
     ports:
-      - "80:80"
+      - "8080:80"
     links:
       - teampass-db:db
     depends_on:
       - teampass-db
+    networks:
+      - passmgr
+
+networks:
+  passmgr:
