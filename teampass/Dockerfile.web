@@ -13,7 +13,7 @@ RUN apk update \
     && rm -rf TeamPass-${TP_VER} \
     && rm teampass.tar.gz 
 
-RUN mkdir -p /run/apache2 /certificates
+RUN mkdir -p /run/apache2 
 
 RUN sed -i 's/^\(.*DirectoryIndex.*\)$/#\1/g' /etc/apache2/httpd.conf \
     && sed -i 's/^\(max_execution_time = \).*$/\160/g' /etc/php5/php.ini
@@ -24,9 +24,7 @@ ADD ssl/certificates/ /certificates
 RUN ln -s /dev/stdout /var/log/apache2/access.log \
     && ln -s /dev/stderr /var/log/apache2/error.log \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
-    && chown -R apache.apache /var/www/localhost/htdocs \
-    && chmod 0700 /certificates \
-    && chmod 0600 /certificates/*
+    && chown -R apache.apache /var/www/localhost/htdocs 
 
 ENTRYPOINT ["httpd","-D","FOREGROUND"]
 

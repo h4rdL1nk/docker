@@ -18,8 +18,11 @@ services:
     build:
        context: .
        dockerfile: Dockerfile.web
+    volumes:
+      - /certificates:/var/dockershared/passmgr/certificates:ro
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
     links:
       - teampass-db:db
     depends_on:
