@@ -1,0 +1,17 @@
+version: "3"
+services:
+  mongo-rs-01:
+    restart: always
+    image: mongo:3.6 
+    command: ["--replSet","graylog","--keyFile","/ssl/replication.key"]
+    volumes:
+      - ./ssl/:/ssl/:ro
+      - ./deploy/:/deploy/:ro
+  mongo-rs-02:
+    restart: always
+    image: mongo:3.6 
+    command: ["--replSet","graylog","--keyFile","/ssl/replication.key"]
+    volumes:
+      - ./ssl/:/ssl/:ro
+      - ./deploy/:/deploy/:ro
+
