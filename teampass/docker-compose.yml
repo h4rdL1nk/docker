@@ -1,24 +1,34 @@
 
-version: '3.1'
-
+version: "2"
 services:
-
-  db:
+  teampass-db:
+    restart: always
     image: mysql:5.6
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: toor
-      MYSQL_DATABASE: teampass 
-      MYSQL_USER: teampassApp 
-      MYSQL_PASSWORD: t34mPAsSAdM 
-
-  app:
-    depends_on:
-      - db
     ports:
-      - 80:80
-      - 443:443
-    image: teampass/teampass 
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 4dm1nSd1g1tS 
+      MYSQL_DATABASE: teampass
+      MYSQL_PASSWORD: t34mP4sSw0rD 
+      MYSQL_USER: teampassApp 
+    networks:
+      - passmgr
+  teampass-app:
     restart: always
+    build:
+       context: .
+       dockerfile: Dockerfile.web
+    volumes:
+      - /certificates:/var/dockershared/passmgr/certificates:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - teampass-db:db
+    depends_on:
+      - teampass-db
+    networks:
+      - passmgr
 
-
+networks:
+  passmgr:
