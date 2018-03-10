@@ -11,8 +11,8 @@ RUN apk update \
     && cp etcd-v${ETCD_VER}-linux-${ETCD_ARCH}/etcd* /bin/ \
     && rm -rf etcd-v${ETCD_VER}-linux-${ETCD_ARCH}
 
-EXPOSE 2739
-EXPOSE 2780
+EXPOSE 2379
+EXPOSE 2380
 
 #etcd --listen-peer-urls 'http://127.0.0.1:2380' --listen-client-urls 'http://127.0.0.1:2379' --advertise-client-urls 'http://127.0.0.1:2379'
 
