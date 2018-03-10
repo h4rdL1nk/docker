@@ -1,13 +1,34 @@
 
 version: "3"
 services:
-  etcd-cl:
+  etcd-cl-0:
     restart: always
     build:
        context: .
-    command: ["--listen-peer-urls","http://0.0.0.0:2380","--listen-client-urls","http://0.0.0.0:2379","--advertise-client-urls","http://127.0.0.1:2379"]
+    command: [
+       "-name","etcd-cl-0",
+       "--listen-peer-urls","http://0.0.0.0:2380",
+       "--listen-client-urls","http://0.0.0.0:2379",
+       "--advertise-client-urls","http://etcd-cl-0:2379",
+       "--initial-advertise-peer-urls","http://etcd-cl-0:2380",
+       "--initial-cluster","etcd-cl-0=http://etcd-cl-0:2380,etcd-cl-1=http://etcd-cl-1:2380"
+    ]
     networks:
       - etcd-cluster 
+  etcd-cl-1:
+    restart: always
+    build:
+       context: .
+    command: [
+       "-name","etcd-cl-1",
+       "--listen-peer-urls","http://0.0.0.0:2380",
+       "--listen-client-urls","http://0.0.0.0:2379",
+       "--advertise-client-urls","http://etcd-cl-1:2379",
+       "--initial-advertise-peer-urls","http://etcd-cl-1:2380",
+       "--initial-cluster","etcd-cl-0=http://etcd-cl-0:2380,etcd-cl-1=http://etcd-cl-1:2380"
+    ]
+    networks:
+      - etcd-cluster
 
 networks:
   etcd-cluster:
