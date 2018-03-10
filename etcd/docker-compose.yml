@@ -1,31 +1,31 @@
 
 version: "3"
 services:
-  etcd-cl-0:
+  etcd0_0:
     restart: always
     build:
        context: .
     command: [
-       "-name","etcd-cl-0",
+       "-name","etcd0_0",
        "--listen-peer-urls","http://0.0.0.0:2380",
        "--listen-client-urls","http://0.0.0.0:2379",
-       "--advertise-client-urls","http://etcd-cl-0:2379",
-       "--initial-advertise-peer-urls","http://etcd-cl-0:2380",
-       "--initial-cluster","etcd-cl-0=http://etcd-cl-0:2380,etcd-cl-1=http://etcd-cl-1:2380"
+       "--advertise-client-urls","http://etcd0_0:2379",
+       "--initial-advertise-peer-urls","http://etcd0_0:2380",
+       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380"
     ]
     networks:
       - etcd-cluster 
-  etcd-cl-1:
+  etcd0_1:
     restart: always
     build:
        context: .
     command: [
-       "-name","etcd-cl-1",
+       "-name","etcd0_1",
        "--listen-peer-urls","http://0.0.0.0:2380",
        "--listen-client-urls","http://0.0.0.0:2379",
-       "--advertise-client-urls","http://etcd-cl-1:2379",
-       "--initial-advertise-peer-urls","http://etcd-cl-1:2380",
-       "--initial-cluster","etcd-cl-0=http://etcd-cl-0:2380,etcd-cl-1=http://etcd-cl-1:2380"
+       "--advertise-client-urls","http://etcd0_1:2379",
+       "--initial-advertise-peer-urls","http://etcd0_1:2380",
+       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380"
     ]
     networks:
       - etcd-cluster
