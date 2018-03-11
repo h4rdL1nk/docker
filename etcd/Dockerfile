@@ -14,7 +14,7 @@ RUN apk update \
 EXPOSE 2379
 EXPOSE 2380
 
-#docker run --name etcd0_3 --network etcd_etcd-cluster 5dbd5421f524 -name etcd0_3 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://etcd0_3:2379 --initial-advertise-peer-urls http://etcd0_3:2380 --initial-cluster etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380,etcd0_2=http://etcd0_2:2380,etcd0_3=http://etcd0_3:2380 -initial-cluster-token etcd0 -initial-cluster-state new
+#docker run --name etcd0_3 --network etcd_etcd-cluster 5dbd5421f524 -name etcd0_3 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://etcd0_3:2379 --initial-advertise-peer-urls http://etcd0_3:2380 --initial-cluster etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380,etcd0_2=http://etcd0_2:2380,etcd0_3=http://etcd0_3:2380 -initial-cluster-token etcd0 -initial-cluster-state existing
 #docker run --name etcd0_3 --network etcd_etcd-cluster 5dbd5421f524 -name etcd0_3 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://etcd0_3:2379
 
 ENTRYPOINT ["/bin/etcd"]
