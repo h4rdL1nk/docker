@@ -40,7 +40,7 @@ services:
       - cluster.name=es-cl0
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      - "discovery.zen.ping.unicast.hosts=es-cl0-1"
     ulimits:
       memlock:
         soft: -1
