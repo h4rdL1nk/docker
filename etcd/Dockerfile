@@ -1,6 +1,6 @@
 FROM alpine:3.6
 
-ENV ETCD_VER 2.2.5
+ENV ETCD_VER 3.3.2
 ENV ETCD_ARCH amd64
 
 RUN apk --no-cache update \

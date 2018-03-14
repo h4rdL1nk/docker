@@ -3,6 +3,7 @@ version: "3"
 services:
   etcd0_0:
     restart: always
+    container_name: etcd0_0
     build:
        context: .
     command: [
@@ -13,12 +14,13 @@ services:
        "--listen-client-urls","http://0.0.0.0:2379",
        "--advertise-client-urls","http://etcd0_0:2379",
        "--initial-advertise-peer-urls","http://etcd0_0:2380",
-       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380,etcd0_2=http://etcd0_2:2380"
+       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380"
     ]
     networks:
       - etcd-cluster 
   etcd0_1:
     restart: always
+    container_name: etcd0_1
     build:
        context: .
     command: [
@@ -29,23 +31,7 @@ services:
        "--listen-client-urls","http://0.0.0.0:2379",
        "--advertise-client-urls","http://etcd0_1:2379",
        "--initial-advertise-peer-urls","http://etcd0_1:2380",
-       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380,etcd0_2=http://etcd0_2:2380"
-    ]
-    networks:
-      - etcd-cluster
-  etcd0_2:
-    restart: always
-    build:
-       context: .
-    command: [
-       "-name","etcd0_2",
-       "-initial-cluster-token","etcd0",
-       "-initial-cluster-state","new",
-       "--listen-peer-urls","http://0.0.0.0:2380",
-       "--listen-client-urls","http://0.0.0.0:2379",
-       "--advertise-client-urls","http://etcd0_2:2379",
-       "--initial-advertise-peer-urls","http://etcd0_2:2380",
-       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380,etcd0_2=http://etcd0_2:2380"
+       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380"
     ]
     networks:
       - etcd-cluster
