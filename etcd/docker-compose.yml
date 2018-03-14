@@ -6,15 +6,18 @@ services:
     container_name: etcd0_0
     build:
        context: .
+    volumes:
+      - etcddata1:/data
     command: [
-       "-name","etcd0_0",
-       "-initial-cluster-token","etcd0",
-       "-initial-cluster-state","new",
+       "--data-dir","/data",
+       "--name","etcd0_0",
+       "--initial-cluster-token","etcd0",
+       "--initial-cluster-state","new",
        "--listen-peer-urls","http://0.0.0.0:2380",
        "--listen-client-urls","http://0.0.0.0:2379",
        "--advertise-client-urls","http://etcd0_0:2379",
        "--initial-advertise-peer-urls","http://etcd0_0:2380",
-       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380"
+       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380,etcd0_2=http://etcd0_2:2380"
     ]
     networks:
       - etcd-cluster 
@@ -23,18 +26,49 @@ services:
     container_name: etcd0_1
     build:
        context: .
+    volumes:
+      - etcddata2:/data
     command: [
-       "-name","etcd0_1",
-       "-initial-cluster-token","etcd0",
+       "--data-dir","/data",
+       "--name","etcd0_1",
+       "--initial-cluster-token","etcd0",
        "-initial-cluster-state","new",
        "--listen-peer-urls","http://0.0.0.0:2380",
        "--listen-client-urls","http://0.0.0.0:2379",
        "--advertise-client-urls","http://etcd0_1:2379",
        "--initial-advertise-peer-urls","http://etcd0_1:2380",
-       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380"
+       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380,etcd0_2=http://etcd0_2:2380"
     ]
     networks:
       - etcd-cluster
+  etcd0_2:
+    restart: always
+    container_name: etcd0_2
+    build:
+       context: .
+    volumes:
+      - etcddata3:/data
+    command: [
+       "--data-dir","/data",
+       "--name","etcd0_2",
+       "--initial-cluster-token","etcd0",
+       "--initial-cluster-state","new",
+       "--listen-peer-urls","http://0.0.0.0:2380",
+       "--listen-client-urls","http://0.0.0.0:2379",
+       "--advertise-client-urls","http://etcd0_2:2379",
+       "--initial-advertise-peer-urls","http://etcd0_2:2380",
+       "--initial-cluster","etcd0_0=http://etcd0_0:2380,etcd0_1=http://etcd0_1:2380,etcd0_2=http://etcd0_2:2380"
+    ]
+    networks:
+      - etcd-cluster
+
+volumes:
+  etcddata1:
+    driver: local
+  etcddata2:
+    driver: local
+  etcddata3:
+    driver: local
 
 networks:
   etcd-cluster:
