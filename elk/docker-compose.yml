@@ -1,0 +1,60 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
+    container_name: es-cl0-1
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1000M
+        reservations:
+          cpus: '0.25'
+          memory: 750M
+    environment:
+      - cluster.name=es-cl0
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-cl0-1-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - es-cl0-net
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
+    container_name: es-cl0-2
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1000M
+        reservations:
+          cpus: '0.25'
+          memory: 750M
+    environment:
+      - cluster.name=es-cl0
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-cl0-2-data:/usr/share/elasticsearch/data
+    networks:
+      - es-cl0-net
+
+volumes:
+  es-cl0-1-data:
+    driver: local
+  es-cl0-2-data:
+    driver: local
+
+networks:
+  es-cl0-net:
