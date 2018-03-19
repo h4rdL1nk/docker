@@ -16,8 +16,11 @@ services:
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.zen.ping.unicast.hosts=es-cl0-1,es-cl0-2"
+      #Parameters only for NAT or proxied hosts ( remove network.host and transport.host parameters )
       - "network.bind_host=0.0.0.0"
       - "network.publish_host=es-cl0-1"
+      - "transport.bind_host=0.0.0.0"
+      - "transport.publish_host=es-cl0-1"
     ulimits:
       memlock:
         soft: -1
