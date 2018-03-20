@@ -9,7 +9,7 @@ services:
     mem_limit: 1000M
     mem_reservation: 750M
     cpu_count: 1
-    cpu_percent: 50
+    #cpu_percent: 50
     environment:
       - cluster.name=es-cl0
       - bootstrap.memory_lock=true
@@ -35,6 +35,10 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:6.2.2
     container_name: es-cl0-kibana
+    mem_limit: 500M
+    mem_reservation: 400M
+    cpu_count: 1
+    #cpu_percent: 50
     environment:
       SERVER_NAME: kibana.example.org
       ELASTICSEARCH_URL: http://es-cl0-1:9200
@@ -49,6 +53,10 @@ services:
     build:
       context: dockerfiles/fluentd
     container_name: log-shipper
+    mem_limit: 150M
+    mem_reservation: 100M
+    cpu_count: 1
+    #cpu_percent: 50
     volumes:
       - /var/lib/docker:/data:ro
       - ./conf/fluentd.conf:/fluentd/etc/fluentd-alt.conf:ro
