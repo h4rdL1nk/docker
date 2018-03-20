@@ -4,14 +4,15 @@ version: '3'
 
 services:
   fluentd:
-    image: fluent/fluentd
+    build:
+      context: dockerfiles/fluentd
     container_name: log-shipper
     volumes:
       - /var/lib/docker:/data:ro
-      - conf/fluentd.conf:/fluentd/etc/fluentd-alt.conf:ro
+      - ./conf/fluentd.conf:/fluentd/etc/fluentd-alt.conf:ro
     environment:
       - FLUENTD_CONF=fluentd-alt.conf
-      - FLUENTD_OPT="-vv"
+      #- FLUENTD_OPT="-vv"
       - FLUENT_UID=1
     ports:
       - 24224:24224
@@ -48,34 +49,6 @@ services:
       - 9200:9200
     networks:
       - es-cl0-net
-  elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
-    container_name: es-cl0-2
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 1000M
-        reservations:
-          cpus: '0.25'
-          memory: 750M
-    environment:
-      - cluster.name=es-cl0
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=es-cl0-1,es-cl0-2"
-      - "network.bind_host=0.0.0.0"
-      - "network.publish_host=es-cl0-2"
-      - "transport.bind_host=0.0.0.0"
-      - "transport.publish_host=es-cl0-2"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - es-cl0-2-data:/usr/share/elasticsearch/data
-    networks:
-      - es-cl0-net
   kibana:
     image: docker.elastic.co/kibana/kibana:6.2.2
     container_name: es-cl0-kibana
@@ -86,7 +59,7 @@ services:
       - 5601:5601
     depends_on:
       - elasticsearch
-      - elasticsearch2
+      #- elasticsearch2
     networks:
       - es-cl0-net
 
