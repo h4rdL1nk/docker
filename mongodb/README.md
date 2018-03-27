@@ -1,4 +1,7 @@
 
+#This docker-compose file covers the creation of a 3 nodes replicaset
+#With the execution of the commands, we initiate the replicaset and create admin and cluster users
+
 #Create replication key
 openssl rand -base64 640 >ssl/replication.key
 
