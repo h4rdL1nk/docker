@@ -1,24 +1,45 @@
-version: "3"
-services:
-  mongo-rs-01:
-    restart: always
-    image: mongo:3.6 
-    command: ["--auth","--replSet","graylog","--keyFile","/ssl/replication.key"]
-    volumes:
-      - ./ssl/:/ssl/:ro
-      - ./deploy/:/deploy/:ro
-  mongo-rs-02:
-    restart: always
-    image: mongo:3.6 
-    command: ["--auth","--replSet","graylog","--keyFile","/ssl/replication.key"]
-    volumes:
-      - ./ssl/:/ssl/:ro
-      - ./deploy/:/deploy/:ro
-  mongo-rs-03:
-    restart: always
-    image: mongo:3.6 
-    command: ["--auth","--replSet","graylog","--keyFile","/ssl/replication.key"]
-    volumes:
-      - ./ssl/:/ssl/:ro
-      - ./deploy/:/deploy/:ro
 
+version: "3"
+
+services:
+  mongo-rs0-01:
+    restart: always
+    image: mongo:3.6 
+    command: ["--auth","--replSet","rs0","--keyFile","/ssl/replication.key"]
+    volumes:
+      - ./ssl/:/ssl/:ro
+      - ./deploy/:/deploy/:ro
+      - mongodata1:/data/db
+    networks:
+      - mongodb
+  mongo-rs0-02:
+    restart: always
+    image: mongo:3.6 
+    command: ["--auth","--replSet","rs0","--keyFile","/ssl/replication.key"]
+    volumes:
+      - ./ssl/:/ssl/:ro
+      - ./deploy/:/deploy/:ro
+      - mongodata2:/data/db
+    networks:
+      - mongodb
+  mongo-rs0-03:
+    restart: always
+    image: mongo:3.6 
+    command: ["--auth","--replSet","rs0","--keyFile","/ssl/replication.key"]
+    volumes:
+      - ./ssl/:/ssl/:ro
+      - ./deploy/:/deploy/:ro
+      - mongodata3:/data/db
+    networks:
+      - mongodb
+
+networks:
+  mongodb:
+
+volumes:
+  mongodata1:
+    driver: local
+  mongodata2:
+    driver: local
+  mongodata3:
+    driver: local
