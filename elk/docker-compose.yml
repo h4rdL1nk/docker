@@ -20,6 +20,7 @@ services:
       - "network.publish_host=es-cl0-1"
       - "transport.bind_host=0.0.0.0"
       - "transport.publish_host=es-cl0-1"
+      - "xpack.monitoring.history.duration=1d"
     #sysctls:
     #  - vm.max_map_count=262144
     ulimits:
