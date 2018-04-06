@@ -14,7 +14,8 @@ services:
       - cluster.name=es-cl0
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=es-cl0-1,es-cl0-2"
+      #- "discovery.zen.ping.unicast.hosts=es-cl0-1,es-cl0-2"
+      - "discovery.zen.ping.unicast.hosts=es-cl0-1"
       #Parameters only for NAT or proxied hosts ( remove network.host and transport.host parameters )
       - "network.bind_host=0.0.0.0"
       - "network.publish_host=es-cl0-1"
@@ -74,8 +75,8 @@ services:
 volumes:
   es-cl0-1-data:
     driver: local
-  es-cl0-2-data:
-    driver: local
+  #es-cl0-2-data:
+  #  driver: local
 
 networks:
   es-cl0-net:
