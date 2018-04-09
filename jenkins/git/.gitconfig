@@ -1,0 +1,7 @@
+[http]
+	proxy = http://proxy2pdi.service.dsn.inet:6666
+        sslVerify = false
+[https]
+	proxy = http://proxy2pdi.service.dsn.inet:6666
+        sslVerify = false
+

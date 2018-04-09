@@ -1,0 +1,24 @@
+FROM jenkins/jenkins:lts-slim
+
+USER root
+
+RUN apt-get update \  
+    && apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common python-pip python-virtualenv python-openssl netcat dnsutils \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
+    && echo "deb [arch=amd64] https://download.docker.com/linux/debian $(egrep "^VERSION=" /etc/os-release | sed 's/^VERSION=\".*(\(.*\))\"/\1/g') stable" >/etc/apt/sources.list.d/docker-ce.list \
+    && apt-get update \
+    && apt-get install -y docker-ce \
+    && adduser jenkins docker \
+    && usermod -u 996 jenkins \
+    && groupmod -g 993 jenkins \
+    && touch /var/run/docker.sock \
+    && chown root.docker /var/run/docker.sock 
+
+COPY git/gitconfig.sh /gitconfig.sh
+
+#COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+#RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+#RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
+
+USER jenkins
+#RUN /gitconfig.sh
