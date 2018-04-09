@@ -11,6 +11,7 @@ RUN apt-get update \
     && adduser jenkins docker \
     && usermod -u 996 jenkins \
     && groupmod -g 993 jenkins \
+    && chown -R jenkins.jenkins /usr/share/jenkins/ref /var/jenkins_home
     && touch /var/run/docker.sock \
     && chown root.docker /var/run/docker.sock 
 
