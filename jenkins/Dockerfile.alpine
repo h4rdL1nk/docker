@@ -3,19 +3,24 @@ FROM jenkins/jenkins:lts-alpine
 USER root
 
 RUN apk update --no-cache \
-    && apk add --no-cache tzdata python2 py2-pip py2-virtualenv \
-    && apk add --virtual builddeps linux-headers python2-dev build-base libffi-dev openssl-dev docker \
-    && apk upgrade
+    && apk add --no-cache tzdata python2 py2-pip py2-virtualenv bind-tools netcat-openbsd strace openssl \
+    && apk add --virtual builddeps linux-headers python2-dev build-base libffi-dev openssl-dev docker
 
 RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
+
+#Modify root user home inside the container ( to read .gitconfig file )
 RUN sed -i 's/\(^root:x:0:0:root:\)\/root\(:\/bin\/ash\)/\1\/var\/jenkins_home\2/' /etc/passwd 
+
+#Modify jenkins uid to match docker host user uid
 #RUN sed -i 's/\(^jenkins:x:\).*:.*\(:Linux User,,,:\/var\/jenkins_home:\/bin\/bash\)/\1996:993\2/g' /etc/passwd
 #RUN sed -i 's/^\(jenkins:x:\).*\(:jenkins\)/\1993\2/g' /etc/group
 #RUN chown -R jenkins.jenkins /var/jenkins_home
 
+#Automated jenkins plugins install
 #COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 #RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 #RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
 
+#Establish container run user to jenkins
 #USER jenkins
 #Stablished root as jvm user, due to problems with python virtualenv and libraries
