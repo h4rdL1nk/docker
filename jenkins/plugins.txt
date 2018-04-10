@@ -1,3 +1,5 @@
 blueocean
 ansicolor
 role-strategy
+git-parameter
+git-changelog

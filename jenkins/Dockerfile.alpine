@@ -13,7 +13,5 @@ RUN sed -i 's/\(^root:x:0:0:root:\)\/root\(:\/bin\/ash\)/\1\/var\/jenkins_home\2
 #RUN sed -i 's/^\(jenkins:x:\).*\(:jenkins\)/\1993\2/g' /etc/group
 #RUN chown -R jenkins.jenkins /var/jenkins_home
 
-#Tests
-#RUN pip install --upgrade pip shade
-
 #USER jenkins
+#Stablished root as jvm user, due to problems with python virtualenv and libraries
