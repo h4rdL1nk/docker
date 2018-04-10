@@ -3,7 +3,7 @@ FROM jenkins/jenkins:lts-alpine
 USER root
 
 RUN apk update --no-cache \
-    && apk add --no-cache tzdata python2 py2-pip py2-virtualenv \
+    && apk add --no-cache tzdata python2 py2-pip py2-virtualenv bind-tools netcat-openbsd strace \
     && apk add --virtual builddeps linux-headers python2-dev build-base libffi-dev openssl-dev docker
 
 RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime 
@@ -12,6 +12,6 @@ RUN sed -i 's/^\(jenkins:x:\).*\(:jenkins\)/\1993\2/g' /etc/group
 RUN chown -R jenkins.jenkins /var/jenkins_home
 
 #Tests
-RUN pip install --upgrade pip shade
+#RUN pip install --upgrade pip shade
 
-USER jenkins
+#USER jenkins
