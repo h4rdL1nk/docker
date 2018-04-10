@@ -3,13 +3,15 @@ FROM jenkins/jenkins:lts-alpine
 USER root
 
 RUN apk update --no-cache \
-    && apk add --no-cache tzdata python2 py2-pip py2-virtualenv bind-tools netcat-openbsd strace \
-    && apk add --virtual builddeps linux-headers python2-dev build-base libffi-dev openssl-dev docker
+    && apk add --no-cache tzdata python2 py2-pip py2-virtualenv \
+    && apk add --virtual builddeps linux-headers python2-dev build-base libffi-dev openssl-dev docker \
+    && apk upgrade
 
-RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime 
-RUN sed -i 's/\(^jenkins:x:\).*:.*\(:Linux User,,,:\/var\/jenkins_home:\/bin\/bash\)/\1996:993\2/g' /etc/passwd
-RUN sed -i 's/^\(jenkins:x:\).*\(:jenkins\)/\1993\2/g' /etc/group
-RUN chown -R jenkins.jenkins /var/jenkins_home
+RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
+RUN sed -i 's/\(^root:x:0:0:root:\)\/root\(:\/bin\/ash\)/\1\/var\/jenkins_home\2/' /etc/passwd 
+#RUN sed -i 's/\(^jenkins:x:\).*:.*\(:Linux User,,,:\/var\/jenkins_home:\/bin\/bash\)/\1996:993\2/g' /etc/passwd
+#RUN sed -i 's/^\(jenkins:x:\).*\(:jenkins\)/\1993\2/g' /etc/group
+#RUN chown -R jenkins.jenkins /var/jenkins_home
 
 #Tests
 #RUN pip install --upgrade pip shade
