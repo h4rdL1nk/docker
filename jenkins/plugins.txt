@@ -1,5 +1,7 @@
 blueocean
+green-balls
 ansicolor
 role-strategy
 git-parameter
 git-changelog
+cloudbees-folder
