@@ -1,7 +1,6 @@
 
 #Run the container
-
-docker run --name jenkins-tid-run -p8080:8080 -d --network host -v /var/run/docker.sock:/var/run/docker.sock jenkins-tid
+  docker run --name jenkins-tid-run -p8080:8080 -d --network host -v /var/run/docker.sock:/var/run/docker.sock jenkins-tid
 
 #Useful options ( set as environment variables on container run command )
   - JAVA_OPTS
@@ -22,5 +21,4 @@ docker run --name jenkins-tid-run -p8080:8080 -d --network host -v /var/run/dock
   keytool -list -keystore jenkins_keystore.jks -storepass 'securepass'
 
 #Running dockerd in Openstack VM
-
-dockerd option "mtu" must be set to a value>=1500. If not set, there will be issues like TLS connections hanging until reset.
+  dockerd option "mtu" must be set to a value>=1500 ( {"mtu":1450} ). If not set, there will be issues like TLS connections hanging until reset.
