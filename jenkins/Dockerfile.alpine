@@ -1,6 +1,7 @@
 FROM jenkins/jenkins:lts-alpine
 
 USER root
+WORKDIR /var/jenkins_home
 
 RUN apk update --no-cache \
     && apk add --no-cache tzdata python2 py2-pip py2-virtualenv bind-tools netcat-openbsd strace openssl \
