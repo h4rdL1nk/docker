@@ -1,0 +1,12 @@
+pipeline {
+    agent any
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+    }
+    stages {
+        stage('Build container'){
+            script: "docker build -t test-alpine -f Dockerfile.alpine ."
+        }
+    }
+}
