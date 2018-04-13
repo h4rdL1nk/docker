@@ -10,6 +10,9 @@ RUN apk update --no-cache \
 
 RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
 
+#Update WAR
+#RUN curl -sL -o /usr/share/jenkins/jenkins.war https://updates.jenkins-ci.org/latest/jenkins.war
+
 #Modify root user home inside the container ( to read .gitconfig file )
 RUN sed -i 's/\(^root:x:0:0:root:\)\/root\(:\/bin\/ash\)/\1\/var\/jenkins_home\2/' /etc/passwd 
 
