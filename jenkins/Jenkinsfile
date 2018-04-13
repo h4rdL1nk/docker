@@ -10,7 +10,7 @@ pipeline {
                 set +x
                 cd jenkins
                 docker build -t test-alpine -f Dockerfile.alpine .
-            ''''
+            '''
         }
     }
 }
