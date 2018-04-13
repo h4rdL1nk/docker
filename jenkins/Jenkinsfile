@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment{
+        HTTP_PROXY = 'http://proxy2pdi.service.dsn.inet:6666'
+        HTTPS_PROXY = 'http://proxy2pdi.service.dsn.inet:6666'
+    }
     options {
         timestamps()
         disableConcurrentBuilds()
