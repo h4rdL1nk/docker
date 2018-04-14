@@ -1,7 +1,6 @@
 
-
-###Fluentd install (https://docs.fluentd.org/v1.0/articles/install-by-gem)
-
+##Fluentd install (https://docs.fluentd.org/v1.0/articles/install-by-gem)
+```
 $ sudo pacman -S ruby
 
 $ gem install fluentd --no-ri --no-rdoc
@@ -18,7 +17,4 @@ $ fluent-gem install fluent-plugin-elasticsearch
 $ fluentd --setup ~/fluent
 
 $ fluentd -c ~/fluent/fluent.conf
-
-
-
-
+```
