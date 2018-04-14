@@ -1,5 +1,5 @@
 
-##Fluentd install (https://docs.fluentd.org/v1.0/articles/install-by-gem)
+## Fluentd install (https://docs.fluentd.org/v1.0/articles/install-by-gem)
 
 ```
 $ sudo pacman -S ruby
