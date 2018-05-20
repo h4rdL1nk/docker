@@ -3,7 +3,18 @@
 version: '2.3'
 
 services:
-  elasticsearch:
+  web:
+    image: httpd:alpine
+    ports:
+      - "80:80"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:5140
+        tag: httpd.access
+    depends_on:
+      - fluentd
+  elasticsearch-1:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
     container_name: es-cl0-1
     mem_limit: 1000M
@@ -13,11 +24,11 @@ services:
       - cluster.name=es-cl0
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=es-cl0-1"
+      - "discovery.zen.ping.unicast.hosts=es-cl0-1,es-cl0-2"
       #Parameters only for NAT or proxied hosts ( remove network.host and transport.host parameters )
-      - "network.bind_host=0.0.0.0"
+      - "network.bind_host=es-cl0-1"
       - "network.publish_host=es-cl0-1"
-      - "transport.bind_host=0.0.0.0"
+      - "transport.bind_host=es-cl0-1"
       - "transport.publish_host=es-cl0-1"
     ulimits:
       memlock:
@@ -28,7 +39,31 @@ services:
     ports:
       - 9200:9200
     networks:
-      - es-cl0-net  
+      - es-cl0-net
+  elasticsearch-2:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+    container_name: es-cl0-2
+    mem_limit: 1000M
+    mem_reservation: 750M
+    cpu_count: 1
+    environment:
+      - cluster.name=es-cl0
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=es-cl0-1,es-cl0-2"
+      #Parameters only for NAT or proxied hosts ( remove network.host and transport.host parameters )
+      - "network.bind_host=es-cl0-2"
+      - "network.publish_host=es-cl0-2"
+      - "transport.bind_host=es-cl0-2"
+      - "transport.publish_host=es-cl0-2"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-cl0-2-data:/usr/share/elasticsearch/data
+    networks:
+      - es-cl0-net
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:6.2.4
     container_name: es-cl0-kibana
@@ -41,7 +76,8 @@ services:
     ports: 
       - 5601:5601
     depends_on:
-      - elasticsearch
+      - elasticsearch-1
+      - elasticsearch-2
     networks:
       - es-cl0-net
   fluentd:
@@ -54,18 +90,19 @@ services:
     volumes:
       - /var/lib/docker:/data:ro
       - ./conf/fluentd.conf:/fluentd/etc/fluentd-alt.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - FLUENTD_CONF=fluentd-alt.conf
-      #- FLUENTD_OPT="-vv"
+      #- FLUENTD_OPT=-vv
       - FLUENT_UID=1
     ports:
-      - 24224:24224
-    depends_on:
-      - elasticsearch
+      - 5140:5140
     networks:
       - es-cl0-net  
 volumes:
   es-cl0-1-data:
+    driver: local 
+  es-cl0-2-data:
     driver: local
 
 networks:
