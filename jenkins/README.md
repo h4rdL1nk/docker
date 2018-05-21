@@ -22,3 +22,15 @@
 
 #Running dockerd in Openstack VM
   dockerd option "mtu" must be set to a value>=1500 ( {"mtu":1450} ). If not set, there will be issues like TLS connections hanging until reset.
+
+#Enable script permissions
+
+ - Go to: https://jenkins.smartdigits.io:8443/scriptApproval/
+ - Check list of approvals:
+
+    method groovy.lang.GroovyObject invokeMethod java.lang.String java.lang.Object
+    method hudson.model.Run getCauses
+    method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild
+    staticMethod jenkins.model.Jenkins getInstance
+  
+ - This list is populated when administrator approves some of the "pending approvals" specified at the top op this page
