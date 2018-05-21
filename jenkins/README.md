@@ -34,3 +34,15 @@
     staticMethod jenkins.model.Jenkins getInstance
   
   - This list is populated when administrator approves some of the "pending approvals" specified at the top op this page
+
+#Tips
+
+  - Get job cause
+
+    def causes = currentBuild.rawBuild.getCauses()
+    causes.eachWithIndex { item, index ->
+      println item
+      println index
+    }
+    def specificCause = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
+    println specificCause.properties
