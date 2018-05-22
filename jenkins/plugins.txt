@@ -6,3 +6,4 @@ git-parameter
 git-changelog
 cloudbees-folder
 global-slack-notifier
+dockerhub-notification
