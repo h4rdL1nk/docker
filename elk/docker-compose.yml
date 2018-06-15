@@ -15,7 +15,7 @@ services:
     depends_on:
       - fluentd
   elasticsearch-1:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.3.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.0
     container_name: es-cl0-1
     mem_limit: 1000M
     mem_reservation: 750M
@@ -41,7 +41,7 @@ services:
     networks:
       - es-cl0-net
   elasticsearch-2:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.3.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.0
     container_name: es-cl0-2
     mem_limit: 1000M
     mem_reservation: 750M
@@ -65,14 +65,15 @@ services:
     networks:
       - es-cl0-net
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.3.0
+    image: docker.elastic.co/kibana/kibana:6.3.0
     container_name: es-cl0-kibana
     mem_limit: 500M
     mem_reservation: 400M
     cpu_count: 1
     environment:
-      SERVER_NAME: kibana.example.org
-      ELASTICSEARCH_URL: http://es-cl0-1:9200
+      - "SERVER_NAME=kibana.example.org"
+      - "ELASTICSEARCH_URL=http://es-cl0-1:9200"
+      - "xpack.monitoring.collection.enabled=true"
     ports: 
       - 5601:5601
     depends_on:
