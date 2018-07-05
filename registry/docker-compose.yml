@@ -1,0 +1,80 @@
+version: "3"
+
+services:
+  portus-db:
+    restart: unless-stopped
+    image: mariadb:10.3.8
+    #ports:
+    #  - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 4dm1nSd1g1tS 
+      MYSQL_DATABASE: portusDb
+      MYSQL_PASSWORD: p0rtUsDbP4sS 
+      MYSQL_USER: portusApp 
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    networks:
+      - registry
+  
+  portus-app:
+    restart: unless-stopped
+    image: opensuse/portus:latest
+    ports: 
+      - "${AUTH_PORT}:${AUTH_PORT}"
+    environment:
+      PORTUS_MACHINE_FQDN_VALUE: "${FQDN}"
+      PORTUS_CHECK_SSL_USAGE_ENABLED: "false"
+      PORTUS_SECRET_KEY_BASE: 4239947f5a72e05182a4dc35fb934b5814682e9996743ac1988536ab607d2dd8c5a9ce998efde50daa240c4e8eb320f3646b98009f0ae13416438e856b72479c
+      PORTUS_KEY_PATH: /certs/${FQDN}.key
+      PORTUS_PASSWORD: 668e311cb8a1fe6e25784e5f05f3b80c
+      PORTUS_PUMA_TLS_CERT: /certs/${FQDN}.pem
+      PORTUS_PUMA_TLS_KEY: /certs/${FQDN}.key
+      PORTUS_DB_ADAPTER: mysql2
+      PORTUS_DB_HOST: portus-db
+      PORTUS_DB_USERNAME: portusApp
+      PORTUS_DB_PASSWORD: p0rtUsDbP4sS
+      PORTUS_DB_DATABASE: portusDb
+      PORTUS_DB_PORT: 3306
+      PORTUS_LOG_LEVEL: "debug"
+      RAILS_SERVE_STATIC_FILES: "true"
+    volumes:
+      - ${PWD}/${CERTS_DIR}:/certs:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    networks:
+      - registry
+    depends_on:
+      - portus-db
+
+  registry:
+    restart: unless-stopped
+    image: registry:2
+    ports: 
+      - "${REGISTRY_PORT}:${REGISTRY_PORT}"
+    environment:
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+      REGISTRY_HTTP_ADDR: 0.0.0.0:${REGISTRY_PORT}
+      #REGISTRY_HTTP_TLS_CERTIFICATE: /certs/${FQDN}.pem
+      #REGISTRY_HTTP_TLS_KEY: /certs/${FQDN}.key
+      REGISTRY_AUTH: token
+      REGISTRY_AUTH_TOKEN_REALM: https://${FQDN}:${AUTH_PORT}/v2/token
+      REGISTRY_AUTH_TOKEN_SERVICE: "${FQDN}:${REGISTRY_PORT}"
+      REGISTRY_AUTH_TOKEN_ISSUER: "${FQDN}"
+      REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE: /certs/${FQDN}.pem
+    volumes:
+      - ${PWD}/${CERTS_DIR}:/certs:ro
+      #- /var/dockershared/registry/data:/var/lib/registry:rw
+      #- /var/dockershared/registry/conf:/config:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    networks:
+      - registry
+
+networks:
+  registry:
