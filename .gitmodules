@@ -1,0 +1,3 @@
+[submodule "registry/harbor/coreos-clair"]
+	path = registry/harbor/coreos-clair
+	url = https://github.com/coreos/clair

@@ -1,4 +1,4 @@
-FQDN="registry.local"
+FQDN="smartdigits.io"
 CERTS_DIR="ssl/"
 REGISTRY_PORT=5000
 AUTH_PORT=3000

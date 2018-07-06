@@ -20,7 +20,7 @@ services:
   
   portus-app:
     restart: unless-stopped
-    image: opensuse/portus:latest
+    image: opensuse/portus:2.3
     ports: 
       - "${AUTH_PORT}:${AUTH_PORT}"
     environment:
@@ -37,6 +37,11 @@ services:
       PORTUS_DB_PASSWORD: p0rtUsDbP4sS
       PORTUS_DB_DATABASE: portusDb
       PORTUS_DB_PORT: 3306
+      PORTUS_ANONYMOUS_BROWSING_ENABLED: "true"
+      #PORTUS_BACKGROUND: "false"
+      #PORTUS_BACKGROUND_REGISTRY_ENABLED: "false"
+      #PORTUS_BACKGROUND_SYNC_ENABLED: "false"
+      #PORTUS_BACKGROUND_SYNC_STRATEGY: update-delete
       PORTUS_LOG_LEVEL: "debug"
       RAILS_SERVE_STATIC_FILES: "true"
     volumes:
@@ -49,6 +54,7 @@ services:
       - registry
     depends_on:
       - portus-db
+      - registry
 
   registry:
     restart: unless-stopped
@@ -60,13 +66,21 @@ services:
       REGISTRY_HTTP_ADDR: 0.0.0.0:${REGISTRY_PORT}
       #REGISTRY_HTTP_TLS_CERTIFICATE: /certs/${FQDN}.pem
       #REGISTRY_HTTP_TLS_KEY: /certs/${FQDN}.key
+      SSL_TRUST: ${FQDN}:${AUTH_PORT}
       REGISTRY_AUTH: token
       REGISTRY_AUTH_TOKEN_REALM: https://${FQDN}:${AUTH_PORT}/v2/token
       REGISTRY_AUTH_TOKEN_SERVICE: "${FQDN}:${REGISTRY_PORT}"
       REGISTRY_AUTH_TOKEN_ISSUER: "${FQDN}"
       REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE: /certs/${FQDN}.pem
+      #REGISTRY_NOTIFICATIONS_ENDPOINTS: "- name: portus\n  url: https://smartdigits.io:3000/v2/webhooks/events\n  timeout: 1000ms\n  threshold: 5\n  backoff: 1s"
+      #REGISTRY_NOTIFICATIONS_ENDPOINTS_0_NAME: portus
+      #REGISTRY_NOTIFICATIONS_ENDPOINTS_0_URL: https://${FQDN}:${AUTH_PORT}/v2/webhooks/events
+      #REGISTRY_NOTIFICATIONS_ENDPOINTS_0_TIMEOUT: 1000ms
+      #REGISTRY_NOTIFICATIONS_ENDPOINTS_0_THRESHOLD: 5
+      #REGISTRY_NOTIFICATIONS_ENDPOINTS_0_BACKOFF: 2s
     volumes:
       - ${PWD}/${CERTS_DIR}:/certs:ro
+      #- ${PWD}/config/config.yml:/etc/docker/registry/config.yml
       #- /var/dockershared/registry/data:/var/lib/registry:rw
       #- /var/dockershared/registry/conf:/config:ro
     logging:

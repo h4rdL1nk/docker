@@ -1,0 +1,8 @@
+version: 0.1
+notifications:
+  endpoints:
+    - name: portus
+      url: https://smartdigits.io:3000/v2/webhooks/events
+      timeout: 1000ms
+      threshold: 5
+      backoff: 1s

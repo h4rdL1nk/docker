@@ -1,0 +1,197 @@
+version: '2'
+services:
+  #log:
+  #  image: vmware/harbor-log:v1.5.1
+  #  container_name: harbor-log
+  #  restart: always
+  #  volumes:
+  #    - /var/log/harbor/:/var/log/docker/:z
+  #    - ./common/config/log/:/etc/logrotate.d/:z
+  #  ports:
+  #    - 127.0.0.1:1514:10514
+  #  networks:
+  #    - harbor
+  registry:
+    image: vmware/registry-photon:v2.6.2-v1.5.1
+    container_name: registry
+    restart: always
+    volumes:
+      - ${HARBOR_DATA_DIR}/registry:/storage:z
+      - ${HARBOR_CONFIG_DIR}/registry/:/etc/registry/:z
+    networks:
+      - harbor
+      - harbor-clair
+    environment:
+      - GODEBUG=netdns=cgo
+    command:
+      ["serve", "/etc/registry/config.yml"]
+    #depends_on:
+      #- log
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+  mysql:
+    image: vmware/harbor-db:v1.5.1
+    container_name: harbor-db
+    restart: always
+    volumes:
+      #Workaround for database initialization error on table create properties
+      - ${HARBOR_OVERRIDE_DIR}/harbor-db/registry.sql:/docker-entrypoint-initdb.d/registry.sql:z
+      - ${HARBOR_DATA_DIR}/database:/var/lib/mysql:z
+    networks:
+      - harbor
+    env_file:
+      - ${HARBOR_CONFIG_DIR}/db/env
+    #depends_on:
+      #- log
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+  adminserver:
+    image: vmware/harbor-adminserver:v1.5.1
+    container_name: harbor-adminserver
+    environment:
+      HARBOR_ADMIN_PASSWORD: ${SECRET_HARBOR_ADMIN_PASSWORD}
+    env_file:
+      - ${HARBOR_CONFIG_DIR}/adminserver/env
+    restart: always
+    volumes:
+      - ${HARBOR_DATA_DIR}/config/:/etc/adminserver/config/:z
+      - ${HARBOR_CONFIG_DIR}/secretkey:/etc/adminserver/key:z
+      - ${HARBOR_DATA_DIR}/:/data/:z
+    networks:
+      - harbor
+    #depends_on:
+      #- log
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+  ui:
+    image: vmware/harbor-ui:v1.5.1
+    container_name: harbor-ui
+    env_file:
+      - ${HARBOR_CONFIG_DIR}/ui/env
+    restart: always
+    volumes:
+      - ${HARBOR_CONFIG_DIR}/ui/app.conf:/etc/ui/app.conf:z
+      - ${HARBOR_CONFIG_DIR}/ui/private_key.pem:/etc/ui/private_key.pem:z
+      - ${HARBOR_CONFIG_DIR}/ui/certificates/:/etc/ui/certificates/:z
+      - ${HARBOR_CONFIG_DIR}/secretkey:/etc/ui/key:z
+      - ${HARBOR_DATA_DIR}/ca_download/:/etc/ui/ca/:z
+      - ${HARBOR_DATA_DIR}/psc/:/etc/ui/token/:z
+    networks:
+      harbor:
+      harbor-clair:
+        aliases:
+          - harbor-ui
+    depends_on:
+      #- log
+      - adminserver
+      - registry
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+  jobservice:
+    image: vmware/harbor-jobservice:v1.5.1
+    container_name: harbor-jobservice
+    env_file:
+      - ${HARBOR_CONFIG_DIR}/jobservice/env
+    restart: always
+    volumes:
+      - ${HARBOR_DATA_DIR}/job_logs:/var/log/jobs:z
+      - ${HARBOR_CONFIG_DIR}/jobservice/config.yml:/etc/jobservice/config.yml:z
+    networks:
+      - harbor
+      - harbor-clair
+    depends_on:
+      - redis
+      - ui
+      - adminserver
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+  redis:
+    image: vmware/redis-photon:v1.5.1
+    container_name: redis
+    restart: always
+    volumes:
+      - ${HARBOR_DATA_DIR}/redis:/data
+    networks:
+      - harbor
+    #depends_on:
+      #- log
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+  proxy:
+    image: vmware/nginx-photon:v1.5.1
+    container_name: nginx
+    restart: always
+    volumes:
+      - ${HARBOR_CONFIG_DIR}/nginx:/etc/nginx:z
+    networks:
+      - harbor
+    ports:
+      - 80:80
+      - 443:443
+      - 4443:4443
+    depends_on:
+      - mysql
+      - registry
+      - ui
+      #- log
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+  postgres:
+    networks:
+      harbor-clair:
+        aliases:
+          - postgres
+    container_name: clair-db
+    image: vmware/postgresql-photon:v1.5.1
+    restart: always
+    #depends_on:
+    #  - log
+    env_file:
+      ${HARBOR_CONFIG_DIR}/clair/postgres_env
+    volumes:
+      - ${HARBOR_CONFIG_DIR}/clair/postgresql-init.d/:/docker-entrypoint-initdb.d:z
+      - ${HARBOR_DATA_DIR}/clair-db:/var/lib/postgresql/data:z
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+  clair:
+    networks:
+      - harbor-clair
+    container_name: clair
+    #image: vmware/clair-photon:v2.0.1-v1.5.1
+    #build:
+    #  context: coreos-clair
+    image: vmware/clair-photon:v2-tmp-bzr-url-fix
+    restart: always
+    cpu_quota: 150000
+    depends_on:
+      - postgres
+    volumes:
+      - ${HARBOR_CONFIG_DIR}/clair:/config:z
+      - ${HARBOR_CONFIG_DIR}/clair/config.yaml:/etc/clair/config.yaml:z
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+    env_file:
+      ${HARBOR_CONFIG_DIR}/clair/clair_env
+networks:
+  harbor:
+    external: false
+  harbor-clair:
+    external: false
