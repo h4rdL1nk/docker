@@ -1,0 +1,16 @@
+---
+
+filebeat:
+  inputs:
+    - type: docker
+      containers:
+        ids: '*'
+        stream: all
+
+output:
+  elasticsearch:
+    enabled: true
+    hosts: ["es-cl0-1:9200"]
+
+queue.mem:
+  events: 4096
